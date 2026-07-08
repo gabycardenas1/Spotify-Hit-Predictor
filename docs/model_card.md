@@ -28,10 +28,6 @@ Documento de transparencia, desempeño, uso responsable, limitaciones, fairness 
 | Versión | 1.0 |
 | Tipo de tarea | Clasificación supervisada binaria |
 | Algoritmo seleccionado | HistGradientBoostingClassifier |
-| Responsable del Model Card | David Jaramillo — Data Stweard |
-| Responsable de modelado | Sebastián Quijia — Data Scientist |
-| Responsable de datos | Anita Hidalgo — Data Engineer |
-| Responsable de análisis | Emilio Andrade — Data Analyst |
 | Líder del proyecto | Gabriela Cárdenas — Project Owner |
 | Objetivo del modelo | Estimar la probabilidad de que una canción alcance popularidad mayor o igual a 50 en Spotify |
 | Salida esperada | Probabilidad de popularidad y clasificación binaria según un umbral de decisión |
