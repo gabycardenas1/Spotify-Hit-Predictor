@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Spotify Hit Predictor — Dashboard Interactivo 3D</title>
+<style>
+:root{
+  --bg:#050908;--bg2:#08110d;--panel:rgba(255,255,255,.075);--panel2:rgba(255,255,255,.115);
+  --line:rgba(255,255,255,.14);--ink:#f5fff8;--muted:rgba(245,255,248,.66);--green:#1DB954;
+  --green2:#7CFFAC;--cyan:#77EAF2;--orange:#FFB65C;--red:#FF6978;--purple:#A88BFF;
+  --shadow:0 35px 100px rgba(0,0,0,.55);--radius:30px;
+}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;color:var(--ink);font-family:ui-sans-serif,-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",sans-serif;background:
+radial-gradient(circle at var(--mx,65%) var(--my,20%),rgba(29,185,84,.19),transparent 31vw),
+radial-gradient(circle at 10% 15%,rgba(119,234,242,.12),transparent 27vw),
+radial-gradient(circle at 90% 75%,rgba(255,182,92,.12),transparent 30vw),
+linear-gradient(135deg,#020303 0%,#07120d 52%,#020403 100%);overflow-x:hidden;}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:60px 60px;mask-image:linear-gradient(to bottom,transparent,#000 15%,#000 86%,transparent);z-index:-2}
+.progress{position:fixed;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,var(--green),var(--cyan),var(--orange));z-index:1001;box-shadow:0 0 24px rgba(29,185,84,.65)}
+.orb{position:fixed;border-radius:50%;filter:blur(42px);opacity:.28;pointer-events:none;z-index:-1}.orb.one{width:360px;height:360px;background:var(--green);top:8%;right:10%;animation:float 9s ease-in-out infinite}.orb.two{width:260px;height:260px;background:var(--cyan);bottom:15%;left:7%;animation:float 11s ease-in-out infinite reverse}@keyframes float{50%{transform:translate3d(0,28px,0) scale(1.05)}}
+.nav{position:fixed;top:16px;left:50%;transform:translateX(-50%);width:min(1200px,calc(100vw - 28px));display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:center;padding:12px 14px;border:1px solid var(--line);background:linear-gradient(180deg,rgba(10,17,15,.86),rgba(6,9,8,.58));backdrop-filter:blur(24px) saturate(1.35);border-radius:24px;box-shadow:0 22px 70px rgba(0,0,0,.38);z-index:999}.brand{display:flex;align-items:center;gap:11px;font-weight:800;letter-spacing:-.03em;white-space:nowrap}.mark{width:36px;height:36px;border-radius:12px;background:linear-gradient(135deg,var(--green2),var(--green));display:grid;place-items:center;color:#041107;box-shadow:0 0 28px rgba(29,185,84,.38);font-weight:950}.links{display:grid;grid-template-columns:repeat(6,minmax(max-content,1fr));gap:7px;overflow-x:auto;scrollbar-width:none}.links::-webkit-scrollbar{display:none}.links a{text-align:center;text-decoration:none;color:rgba(245,255,248,.68);font-size:12px;font-weight:700;padding:11px 12px;border-radius:15px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.08);transition:.25s}.links a:hover,.links a.active{color:#fff;background:rgba(255,255,255,.105);border-color:rgba(124,255,172,.27);transform:translateY(-1px)}
+main{width:min(1200px,calc(100vw - 34px));margin:0 auto}.hero{min-height:94vh;display:grid;grid-template-columns:1.08fr .92fr;gap:28px;align-items:center;padding:140px 0 40px}.hero-meta{display:inline-flex;flex-direction:column;gap:7px;margin-bottom:18px;padding:14px 16px;border:1px solid var(--line);border-radius:20px;background:linear-gradient(135deg,rgba(255,255,255,.08),rgba(255,255,255,.035));box-shadow:0 18px 50px rgba(0,0,0,.22)}.inst{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:rgba(245,255,248,.76)}.team{font-size:14px;color:rgba(245,255,248,.86);line-height:1.45}.eyebrow{display:inline-flex;gap:10px;align-items:center;color:var(--green2);font-size:13px;font-weight:800;border:1px solid rgba(29,185,84,.32);background:rgba(29,185,84,.13);padding:8px 13px;border-radius:999px;box-shadow:inset 0 0 22px rgba(29,185,84,.08)}h1{font-size:clamp(48px,7vw,92px);line-height:.91;letter-spacing:-.075em;margin:22px 0 18px}.title-gradient{background:linear-gradient(120deg,#fff 0%,var(--green2) 42%,var(--cyan) 78%,#fff 100%);-webkit-background-clip:text;background-clip:text;color:transparent}.lead{font-size:clamp(18px,2.1vw,24px);line-height:1.42;color:var(--muted);max-width:720px;margin:0 0 24px}.ctas{display:flex;flex-wrap:wrap;gap:12px}.btn{display:inline-flex;align-items:center;gap:10px;padding:14px 18px;border-radius:999px;border:1px solid rgba(124,255,172,.28);background:linear-gradient(135deg,rgba(29,185,84,.28),rgba(119,234,242,.10));text-decoration:none;color:#fff;font-weight:850;box-shadow:0 15px 45px rgba(0,0,0,.26);transition:.25s}.btn:hover{transform:translateY(-2px);box-shadow:0 24px 70px rgba(29,185,84,.16)}.btn.secondary{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.14)}
+.stage3d{perspective:1400px;min-height:520px;display:grid;place-items:center}.hero-card{width:100%;border-radius:38px;border:1px solid var(--line);background:linear-gradient(145deg,rgba(255,255,255,.14),rgba(255,255,255,.045));box-shadow:var(--shadow);padding:22px;transform-style:preserve-3d;transition:transform .18s ease}.hero-card .screen{border-radius:28px;background:#0c0e0d;overflow:hidden;border:1px solid rgba(255,255,255,.12);box-shadow:inset 0 0 40px rgba(0,0,0,.45)}.hero-card img{width:100%;display:block;aspect-ratio:16/9;object-fit:cover}.live-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}.mini{padding:13px;border-radius:18px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.10)}.mini strong{display:block;font-size:22px;color:var(--green2)}.mini span{display:block;font-size:12px;color:var(--muted);margin-top:3px}
+section{padding:96px 0 26px}.section-head{display:grid;grid-template-columns:1fr minmax(280px,450px);gap:28px;align-items:end;margin-bottom:22px}.kicker{color:var(--green2);font-size:13px;font-weight:850;letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px}h2{font-size:clamp(34px,4.4vw,62px);line-height:.98;letter-spacing:-.055em;margin:0}h3{margin:0 0 10px;font-size:20px;letter-spacing:-.025em}p{color:var(--muted);line-height:1.55}.grid{display:grid;gap:18px}.cols-2{grid-template-columns:repeat(2,1fr)}.cols-3{grid-template-columns:repeat(3,1fr)}.cols-4{grid-template-columns:repeat(4,1fr)}.asym{grid-template-columns:1.15fr .85fr}.card{position:relative;border:1px solid var(--line);background:linear-gradient(145deg,var(--panel2),var(--panel));border-radius:var(--radius);padding:24px;box-shadow:0 22px 70px rgba(0,0,0,.25);overflow:hidden;transform-style:preserve-3d;transition:transform .16s ease,border-color .25s ease,background .25s ease}.card:after{content:"";position:absolute;inset:-1px;background:radial-gradient(circle at var(--cx,50%) var(--cy,20%),rgba(124,255,172,.20),transparent 34%);opacity:0;transition:.25s;pointer-events:none}.card:hover{border-color:rgba(124,255,172,.32);background:linear-gradient(145deg,rgba(255,255,255,.145),rgba(255,255,255,.07))}.card:hover:after{opacity:1}.card>*{position:relative;z-index:1}.kpi strong{display:block;font-size:clamp(34px,4vw,56px);letter-spacing:-.06em;color:#fff}.kpi span{color:var(--muted);font-size:13px}.badge{display:inline-flex;align-items:center;border-radius:999px;padding:6px 10px;font-size:12px;font-weight:850;background:rgba(29,185,84,.16);color:var(--green2);border:1px solid rgba(29,185,84,.28)}
+.controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:18px}.chip{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.055);color:rgba(245,255,248,.78);border-radius:999px;padding:10px 13px;font-weight:850;font-size:13px;cursor:pointer;transition:.22s}.chip.active,.chip:hover{color:#fff;background:rgba(29,185,84,.18);border-color:rgba(124,255,172,.32);transform:translateY(-1px)}.strategy-panel{display:grid;grid-template-columns:1fr 1fr;gap:18px}.matrix{display:grid;grid-template-columns:1fr 1fr;gap:12px}.cell{padding:20px;border-radius:22px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.055)}.cell strong{display:block;font-size:38px;letter-spacing:-.06em}.cell small{display:block;color:var(--muted);margin-top:4px}.tp strong{color:var(--green2)}.fp strong{color:var(--red)}.fn strong{color:var(--orange)}.tn strong{color:var(--cyan)}.meter{height:12px;background:rgba(255,255,255,.08);border-radius:999px;overflow:hidden;margin:10px 0 16px}.meter span{display:block;height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,var(--green),var(--cyan));transition:width .7s ease}.svg-chart{width:100%;min-height:260px}.legend{display:flex;gap:12px;flex-wrap:wrap;color:var(--muted);font-size:12px}.legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px}.figure-grid{display:grid;grid-template-columns:1.25fr .75fr;gap:18px}.viewer{position:relative;border:1px solid var(--line);border-radius:34px;padding:16px;background:rgba(255,255,255,.06);box-shadow:var(--shadow);perspective:1400px}.viewer-inner{border-radius:24px;overflow:hidden;border:1px solid rgba(255,255,255,.10);background:#121414;transform-style:preserve-3d;transition:transform .2s}.viewer img{width:100%;display:block;aspect-ratio:16/9;object-fit:contain;background:#141010}.viewer .caption{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-top:12px}.caption strong{font-size:18px}.caption span{font-size:12px;color:var(--muted)}.thumbs{display:grid;gap:10px;max-height:585px;overflow:auto;padding-right:4px}.thumb{position:relative;display:grid;grid-template-columns:92px 1fr;gap:12px;align-items:center;text-align:left;border:1px solid rgba(255,255,255,.11);background:rgba(255,255,255,.055);border-radius:18px;padding:10px;cursor:pointer;color:#fff;transition:transform .24s ease,background .24s ease,border-color .24s ease,box-shadow .24s ease;overflow:visible;will-change:transform}.thumb:hover,.thumb.active{background:rgba(29,185,84,.14);border-color:rgba(124,255,172,.34);transform:translateX(5px) scale(1.025);box-shadow:0 18px 44px rgba(0,0,0,.28),0 0 28px rgba(29,185,84,.12);z-index:25}.thumb img{width:92px;height:52px;border-radius:12px;object-fit:cover;background:#111;transition:transform .24s ease,box-shadow .24s ease}.thumb:hover img{transform:scale(1.12);box-shadow:0 12px 28px rgba(0,0,0,.45)}.thumb b{display:block;font-size:13px}.thumb small{display:block;color:var(--muted);font-size:11px;margin-top:3px}.thumb .hint{display:inline-flex;margin-top:7px;padding:4px 7px;border-radius:999px;border:1px solid rgba(124,255,172,.22);background:rgba(29,185,84,.10);color:rgba(245,255,248,.78);font-size:10px;font-weight:850;letter-spacing:.02em}.spotlight{position:fixed;inset:0;background:rgba(0,0,0,.82);backdrop-filter:blur(14px);z-index:2000;display:none;align-items:center;justify-content:center;padding:30px}.spotlight.open{display:flex}.spotlight-content{width:min(1100px,96vw);border-radius:28px;border:1px solid rgba(255,255,255,.16);background:#101312;padding:14px;box-shadow:0 40px 120px rgba(0,0,0,.7)}.spotlight img{width:100%;max-height:78vh;object-fit:contain;border-radius:20px}.spotlight button{margin-top:10px;width:100%;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.08);color:#fff;padding:13px;border-radius:16px;font-weight:850;cursor:pointer}.timeline3d{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;perspective:1200px}.step{min-height:180px;transform:rotateX(0deg);transition:.28s}.step:hover{transform:rotateX(4deg) translateY(-6px)}.num{font-size:13px;color:var(--green2);font-weight:900;margin-bottom:14px}.repo-note{font-size:12px;color:rgba(245,255,248,.52);margin-top:8px}.reveal{opacity:0;transform:translateY(26px);transition:.72s cubic-bezier(.2,.8,.2,1)}.reveal.in{opacity:1;transform:none}footer{width:min(1200px,calc(100vw - 34px));margin:50px auto 30px;border-top:1px solid var(--line);padding-top:18px;color:var(--muted);font-size:13px;text-align:center}.hotkeys{position:fixed;right:18px;bottom:18px;z-index:997;border:1px solid rgba(255,255,255,.12);background:rgba(8,12,18,.62);backdrop-filter:blur(18px);border-radius:16px;padding:10px 12px;color:var(--muted);font-size:12px}
+@media(max-width:980px){.nav{grid-template-columns:1fr;border-radius:22px}.hero,.section-head,.cols-2,.cols-3,.cols-4,.asym,.figure-grid,.strategy-panel,.timeline3d{grid-template-columns:1fr}.hero{padding-top:188px}.links{grid-template-columns:repeat(6,minmax(120px,1fr))}.stage3d{min-height:auto}.hotkeys{display:none}}
+@media print{.nav,.progress,.hotkeys,.spotlight{display:none}body{background:#07120d}.card,.viewer{box-shadow:none}section{break-inside:avoid;padding:45px 0}.hero{min-height:auto;padding-top:30px}}
+</style>
+
+<style>
+/* Ajustes v4: sin previsualizador flotante, scroll limpio y cards corregidas */
+.thumbs {
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(124,255,172,.55) rgba(255,255,255,.065);
+}
+.thumbs::-webkit-scrollbar { width: 10px; height: 10px; }
+.thumbs::-webkit-scrollbar-track {
+  background: rgba(255,255,255,.055);
+  border-radius: 999px;
+}
+.thumbs::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--green), var(--cyan));
+  border-radius: 999px;
+  border: 2px solid rgba(6,14,10,.95);
+}
+.thumb {
+  grid-template-columns: 92px minmax(0, 1fr) !important;
+}
+.thumb span { min-width: 0; }
+.thumb b,
+.thumb small {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.thumb .hint {
+  display: inline-flex;
+  margin-top: 7px;
+  padding: 4px 7px;
+  border-radius: 999px;
+  border: 1px solid rgba(124,255,172,.22);
+  background: rgba(29,185,84,.10);
+  color: rgba(245,255,248,.78);
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: .02em;
+}
+.timeline3d {
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)) !important;
+  align-items: stretch;
+}
+.step {
+  min-height: 158px !important;
+  padding: 20px !important;
+}
+.step h3 {
+  font-size: 18px !important;
+  line-height: 1.08 !important;
+  word-break: normal;
+}
+.step p {
+  font-size: 15px !important;
+  line-height: 1.35 !important;
+}
+@media(max-width:980px){
+  .thumbs { max-height: 470px; }
+  .timeline3d { grid-template-columns: repeat(auto-fit, minmax(150px,1fr)) !important; }
+}
+</style>
+
+</head>
+<body>
+<div class="orb one"></div><div class="orb two"></div><div class="progress" id="progress"></div>
+<nav class="nav">
+  <div class="brand"><span class="mark">♪</span><span>Spotify Hit Predictor</span></div>
+  <div class="links">
+    <a href="#inicio">01 Inicio</a><a href="#graficos">02 Gráficos reales</a><a href="#estrategia">03 Estrategia</a><a href="#fairness">04 Fairness</a><a href="#impacto">05 Impacto</a><a href="#cierre">06 Cierre</a>
+  </div>
+</nav>
+<main>
+<section class="hero" id="inicio">
+  <div class="reveal">
+    <div class="hero-meta"><div class="inst">PUCE · Ciencia de Datos para el Estudio de Casos · 2026</div><div class="team">Anita Hidalgo · Emilio Andrade · Gabriela Cárdenas · Sebastián Quijia · Sebastián Jaramillo</div></div>
+    <div class="eyebrow">Dashboard interactivo · salidas reales del repositorio</div>
+    <h1><span class="title-gradient">Predicción de popularidad musical</span></h1>
+    <p class="lead">Dashboard ejecutivo construido sobre las figuras y tablas exportadas por los notebooks: EDA, modelado, evaluación final, impacto económico y fairness por género musical.</p>
+    <div class="ctas"><a class="btn" href="#graficos">Explorar gráficos reales</a><a class="btn secondary" href="#estrategia">Comparar estrategias</a></div>
+  </div>
+  <div class="stage3d reveal">
+    <div class="hero-card tilt">
+      <div class="screen"><img alt="Distribución de popularidad generada por notebook" src="https://raw.githubusercontent.com/anitahf/spotify-tracks-ml/main/reports/figures/popularity_distribution_spotify_style.png"></div>
+      <div class="live-strip"><div class="mini"><strong>0.870</strong><span>ROC-AUC test</span></div><div class="mini"><strong>0.686</strong><span>PR-AUC test</span></div><div class="mini"><strong>HGB</strong><span>modelo final</span></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="graficos">
+  <div class="section-head reveal"><div><div class="kicker">02 · Figuras exportadas por notebooks</div><h2>Los gráficos reales, ahora como galería interactiva.</h2></div><p>Esta sección usa directamente las imágenes ubicadas en <b>reports/figures</b>. Haz clic en cualquier miniatura para cambiar el gráfico principal o en el gráfico grande para verlo en pantalla completa.</p></div>
+  <div class="controls reveal" id="figFilters"><button class="chip active" data-filter="all">Todos</button><button class="chip" data-filter="eda">EDA</button><button class="chip" data-filter="features">Features</button><button class="chip" data-filter="modelo">Modelos</button><button class="chip" data-filter="test">Test final</button></div>
+  <div class="figure-grid reveal">
+    <div class="viewer tilt-lite"><div class="viewer-inner" id="viewerInner"><img id="mainFig" alt="Figura seleccionada"></div><div class="caption"><div><strong id="figTitle"></strong><div class="repo-note" id="figPath"></div></div><span id="figTag" class="badge"></span></div></div>
+    <div class="thumbs" id="thumbs"></div>
+  </div>
+</section>
+
+<section id="estrategia">
+  <div class="section-head reveal"><div><div class="kicker">03 · Evaluación final</div><h2>Dos estrategias de decisión, una misma curva de capacidad predictiva.</h2></div><p>El test set se interpreta con dos umbrales: uno equilibrado para balancear precisión/recall y otro de descubrimiento para capturar más hits potenciales.</p></div>
+  <div class="controls reveal"><button class="chip active strategyBtn" data-strategy="balanced">Equilibrada · umbral 0.55</button><button class="chip strategyBtn" data-strategy="discovery">Descubrimiento · umbral 0.35</button></div>
+  <div class="grid cols-4 reveal" id="metricCards"></div>
+  <div class="strategy-panel" style="margin-top:18px">
+    <article class="card reveal"><h3>Matriz de confusión dinámica</h3><div class="matrix" id="matrix"></div></article>
+    <article class="card reveal"><h3>Métricas del test set</h3><div id="metricBars"></div><div class="legend"><span><i style="background:var(--green)"></i>Accuracy</span><span><i style="background:var(--cyan)"></i>Precision</span><span><i style="background:var(--orange)"></i>Recall</span><span><i style="background:var(--purple)"></i>F1</span></div></article>
+  </div>
+</section>
+
+<section id="fairness">
+  <div class="section-head reveal"><div><div class="kicker">04 · Fairness por género musical</div><h2>El modelo también debe revisarse por grupo.</h2></div><p>La comparación Mainstream vs Latino/emergente permite detectar brechas de recall, precisión, F1 y tasa de predicción positiva.</p></div>
+  <div class="grid cols-2">
+    <article class="card reveal"><h3>Comparación por grupo</h3><div id="fairnessBars"></div></article>
+    <article class="card reveal"><h3>Brechas de fairness</h3><svg class="svg-chart" id="gapRadar" viewBox="0 0 420 300" role="img" aria-label="Radar de brechas de fairness"></svg><p class="repo-note">Lectura: menor brecha implica comportamiento más parejo entre grupos, aunque no necesariamente mejor decisión de negocio.</p></article>
+  </div>
+</section>
+
+<section id="impacto">
+  <div class="section-head reveal"><div><div class="kicker">05 · Impact Simulation</div><h2>Convertir predicciones en decisión económica.</h2></div><p>La simulación traduce TP, FP, FN y TN en valor esperado, canciones para revisión y riesgo de oportunidad perdida.</p></div>
+  <div class="grid cols-3 reveal">
+    <article class="card kpi"><strong id="impactValue">$0</strong><span>Impacto estimado USD</span></article>
+    <article class="card kpi"><strong id="reviewValue">0</strong><span>Canciones enviadas a revisión</span></article>
+    <article class="card kpi"><strong id="hitValue">0</strong><span>Hits reales capturados</span></article>
+  </div>
+  <div class="grid cols-2" style="margin-top:18px">
+    <article class="card reveal"><h3>Impacto comparado por estrategia</h3><svg class="svg-chart" id="impactSvg" viewBox="0 0 520 310" role="img" aria-label="Impacto comparado"></svg></article>
+    <article class="card reveal"><h3>Panel de lectura ejecutiva</h3><p id="execRead"></p><div class="timeline3d"><div class="card step"><div class="num">01</div><h3>Datos</h3><p>Audio features, género y popularidad.</p></div><div class="card step"><div class="num">02</div><h3>Modelo</h3><p>HistGradientBoosting.</p></div><div class="card step"><div class="num">03</div><h3>Umbral</h3><p>0.55 equilibrado · 0.35 descubrimiento.</p></div><div class="card step"><div class="num">04</div><h3>Impacto</h3><p>ROI esperado por decisión.</p></div><div class="card step"><div class="num">05</div><h3>Gobernanza</h3><p>Fairness y LOPDP.</p></div></div></article>
+  </div>
+</section>
+
+<section id="cierre">
+  <div class="section-head reveal"><div><div class="kicker">06 · Cierre</div><h2>Una herramienta para decidir, no para reemplazar criterio humano.</h2></div><p>El modelo permite priorizar canciones con potencial, pero debe acompañarse de monitoreo, revisión artística, reentrenamiento y evaluación de sesgos.</p></div>
+  <div class="grid cols-3 reveal"><article class="card tilt"><h3>Lo fuerte</h3><p>Buen desempeño en test, impacto económico positivo y documentación de gobernanza.</p></article><article class="card tilt"><h3>Lo delicado</h3><p>La estrategia de descubrimiento aumenta recall, pero también eleva falsos positivos y carga de revisión.</p></article><article class="card tilt"><h3>Siguiente paso</h3><p>Publicar dashboard/app en el repo y agregar evidencia exportada de MLflow para cerrar la trazabilidad.</p></article></div>
+</section>
+</main>
+<footer>Spotify Tracks ML · Dashboard interactivo basado en salidas de notebooks y tablas de reports/ · PUCE 2026</footer>
+<div class="hotkeys">Atajos: 1–6 secciones · G galería · E estrategia</div>
+<div class="spotlight" id="spotlight"><div class="spotlight-content"><img id="spotImg" alt="Vista ampliada"><button onclick="closeSpotlight()">Cerrar</button></div></div>
+<script>
+const FIG_BASE='https://raw.githubusercontent.com/anitahf/spotify-tracks-ml/main/reports/figures/';
+const figures=[
+ {title:'Distribución de popularidad',file:'popularity_distribution_spotify_style.png',tag:'EDA',cat:'eda'},
+ {title:'Balance del target',file:'target_balance_spotify_style.png',tag:'EDA',cat:'eda'},
+ {title:'Top géneros por popularidad',file:'top_genres_popularity_spotify_style.png',tag:'EDA',cat:'eda'},
+ {title:'Correlaciones con popularidad',file:'popularity_correlations_spotify_style.png',tag:'Features',cat:'features'},
+ {title:'Audio features por popularidad',file:'audio_features_focus_by_popularity_spotify_style.png',tag:'Features',cat:'features'},
+ {title:'Loudness y tempo por popularidad',file:'loudness_tempo_by_popularity_spotify_style.png',tag:'Features',cat:'features'},
+ {title:'Distribución loudness/tempo',file:'loudness_tempo_distribution_spotify_style.png',tag:'Features',cat:'features'},
+ {title:'Matriz Logistic Regression',file:'confusion_matrix_logistic_spotify_style.png',tag:'Modelo',cat:'modelo'},
+ {title:'Matriz HGB tuned',file:'confusion_matrix_hgb_tuned_spotify_style.png',tag:'Modelo',cat:'modelo'},
+ {title:'Matrices finales en test',file:'final_confusion_matrices_test_spotify_style.png',tag:'Test final',cat:'test'}
+];
+const STRATEGIES={
+ balanced:{label:'Equilibrada — umbral 0.55',Accuracy:.8013372957,Precision:.5594734368,Recall:.748427673,F1:.6403013183,ROC:.8698197024,PR:.6860263686,TP:2380,FP:1874,FN:800,TN:8406,impact:13652000,review:4254,fair:{main:{n:521,pop:246,rate:.4722,pred:.6641,precision:.6618,recall:.9309,f1:.7736},latin:{n:563,pop:91,rate:.1616,pred:.2309,precision:.4769,recall:.6813,f1:.5611}},gaps:{precision:.1849,recall:.2496,f1:.2126,pred:.4332}},
+ discovery:{label:'Descubrimiento — umbral 0.35',Accuracy:.702897474,Precision:.4376237624,Recall:.9034591195,F1:.5896357106,ROC:.8698197024,PR:.6860263686,TP:2873,FP:3692,FN:307,TN:6588,impact:18890000,review:6565,fair:{main:{n:521,pop:246,rate:.4722,pred:.8234,precision:.5664,recall:.9878,f1:.72},latin:{n:563,pop:91,rate:.1616,pred:.3481,precision:.3724,recall:.8022,f1:.5087}},gaps:{precision:.1940,recall:.1856,f1:.2113,pred:.4753}}
+};
+let currentFigure=0,currentStrategy='balanced';
+const $=(s,r=document)=>r.querySelector(s);const $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const pct=v=>(v*100).toFixed(1)+'%';const money=v=>'$'+Math.round(v/1000000).toLocaleString('es-EC',{maximumFractionDigits:1})+'M';
+function setFigure(i){currentFigure=i;const f=figures[i];$('#mainFig').src=FIG_BASE+f.file;$('#mainFig').alt=f.title;$('#figTitle').textContent=f.title;$('#figPath').textContent='reports/figures/'+f.file;$('#figTag').textContent=f.tag;$$('.thumb').forEach((t,idx)=>t.classList.toggle('active',idx===i));}
+function renderThumbs(filter='all'){const box=$('#thumbs');box.innerHTML='';figures.forEach((f,i)=>{if(filter!=='all'&&f.cat!==filter)return;const b=document.createElement('button');b.className='thumb';b.innerHTML=`<img src="${FIG_BASE+f.file}" alt="${f.title}"><span><b>${f.title}</b><small>reports/figures/${f.file}</small><em class="hint">hover: cambia gráfico · doble click: fullscreen</em></span>`;b.onclick=()=>setFigure(i);b.addEventListener('mouseenter',()=>setFigure(i));b.addEventListener('focus',()=>setFigure(i));b.addEventListener('dblclick',()=>{setFigure(i);openSpotlight()});box.appendChild(b);});if(filter!=='all'){const first=figures.findIndex(f=>f.cat===filter);if(first>=0)setFigure(first)}else setFigure(currentFigure)}
+function card(label,value,sub){return `<article class="card kpi tilt"><strong>${value}</strong><span>${label}</span><p class="repo-note">${sub}</p></article>`}
+function renderStrategy(){const s=STRATEGIES[currentStrategy];$('#metricCards').innerHTML=card('Accuracy',pct(s.Accuracy),'clasificación total correcta')+card('Precision',pct(s.Precision),'calidad de predicciones positivas')+card('Recall',pct(s.Recall),'hits capturados')+card('F1-score',pct(s.F1),'balance precisión/recall');
+ $('#matrix').innerHTML=`<div class="cell tp"><strong>${s.TP.toLocaleString('es-EC')}</strong><small>TP · hit recomendado correctamente</small></div><div class="cell fp"><strong>${s.FP.toLocaleString('es-EC')}</strong><small>FP · revisión innecesaria</small></div><div class="cell fn"><strong>${s.FN.toLocaleString('es-EC')}</strong><small>FN · hit perdido</small></div><div class="cell tn"><strong>${s.TN.toLocaleString('es-EC')}</strong><small>TN · inversión evitada</small></div>`;
+ const metrics=[['Accuracy',s.Accuracy,'var(--green)'],['Precision',s.Precision,'var(--cyan)'],['Recall',s.Recall,'var(--orange)'],['F1-score',s.F1,'var(--purple)'],['ROC-AUC',s.ROC,'var(--green2)'],['PR-AUC',s.PR,'var(--red)']];
+ $('#metricBars').innerHTML=metrics.map(m=>`<div><div style="display:flex;justify-content:space-between;font-weight:800"><span>${m[0]}</span><span>${pct(m[1])}</span></div><div class="meter"><span style="width:${m[1]*100}%;background:${m[2]}"></span></div></div>`).join('');
+ $('#impactValue').textContent=money(s.impact);$('#reviewValue').textContent=s.review.toLocaleString('es-EC');$('#hitValue').textContent=s.TP.toLocaleString('es-EC');
+ $('#execRead').innerHTML=currentStrategy==='balanced'?`La estrategia equilibrada reduce falsos positivos y mantiene un F1 de <b>${pct(s.F1)}</b>. Es una opción más conservadora cuando el equipo de A&R tiene capacidad limitada de revisión.`:`La estrategia de descubrimiento captura más hits reales, con recall de <b>${pct(s.Recall)}</b>, y genera mayor impacto estimado, aunque aumenta las canciones para revisión.`;
+ renderFairness();renderImpactSvg();$$('.strategyBtn').forEach(b=>b.classList.toggle('active',b.dataset.strategy===currentStrategy));}
+function renderFairness(){const s=STRATEGIES[currentStrategy];const rows=[['Precision',s.fair.main.precision,s.fair.latin.precision],['Recall',s.fair.main.recall,s.fair.latin.recall],['F1-score',s.fair.main.f1,s.fair.latin.f1],['Tasa pred. positiva',s.fair.main.pred,s.fair.latin.pred]];$('#fairnessBars').innerHTML=rows.map(r=>`<div style="margin-bottom:18px"><div style="display:flex;justify-content:space-between;font-weight:900"><span>${r[0]}</span><span>Mainstream ${pct(r[1])} · Latino/emergente ${pct(r[2])}</span></div><div class="meter"><span style="width:${r[1]*100}%;background:var(--green)"></span></div><div class="meter"><span style="width:${r[2]*100}%;background:var(--orange)"></span></div></div>`).join('')+`<div class="legend"><span><i style="background:var(--green)"></i>Mainstream</span><span><i style="background:var(--orange)"></i>Latino / emergente</span></div>`;renderGapRadar();}
+function renderGapRadar(){const g=STRATEGIES[currentStrategy].gaps;const vals=[g.precision,g.recall,g.f1,g.pred];const labels=['Precisión','Recall','F1','Tasa +'];const cx=210,cy=145,maxR=95,max=.52;let points=[];for(let i=0;i<4;i++){const a=-Math.PI/2+i*Math.PI/2;const r=vals[i]/max*maxR;points.push([cx+Math.cos(a)*r,cy+Math.sin(a)*r]);}let grid='';for(let rr of [25,50,75,100])grid+=`<circle cx="${cx}" cy="${cy}" r="${rr}" fill="none" stroke="rgba(255,255,255,.09)"/>`;let axes='';for(let i=0;i<4;i++){const a=-Math.PI/2+i*Math.PI/2;axes+=`<line x1="${cx}" y1="${cy}" x2="${cx+Math.cos(a)*maxR}" y2="${cy+Math.sin(a)*maxR}" stroke="rgba(255,255,255,.12)"/><text x="${cx+Math.cos(a)*(maxR+38)}" y="${cy+Math.sin(a)*(maxR+28)}" fill="rgba(245,255,248,.72)" font-size="12" text-anchor="middle">${labels[i]}</text>`}$('#gapRadar').innerHTML=`${grid}${axes}<polygon points="${points.map(p=>p.join(',')).join(' ')}" fill="rgba(29,185,84,.28)" stroke="#7CFFAC" stroke-width="3"/><text x="22" y="282" fill="rgba(245,255,248,.64)" font-size="13">Estrategia: ${STRATEGIES[currentStrategy].label}</text>`;}
+function renderImpactSvg(){const b=STRATEGIES.balanced,d=STRATEGIES.discovery;const max=Math.max(b.impact,d.impact);const bars=[['Equilibrada',b.impact,'#1DB954'],['Descubrimiento',d.impact,'#77EAF2']];let svg='<line x1="70" y1="255" x2="485" y2="255" stroke="rgba(255,255,255,.16)"/>';bars.forEach((x,i)=>{const h=x[1]/max*190;const bx=130+i*170;svg+=`<rect x="${bx}" y="${255-h}" width="95" height="${h}" rx="16" fill="${x[2]}" opacity=".88"/><text x="${bx+47}" y="${245-h}" fill="#fff" font-size="18" font-weight="900" text-anchor="middle">${money(x[1])}</text><text x="${bx+47}" y="282" fill="rgba(245,255,248,.72)" font-size="13" text-anchor="middle">${x[0]}</text>`});$('#impactSvg').innerHTML=svg;}
+function openSpotlight(){const img=$('#mainFig');$('#spotImg').src=img.src;$('#spotlight').classList.add('open')}function closeSpotlight(){$('#spotlight').classList.remove('open')}
+function tilt(e,el,scale=10){const r=el.getBoundingClientRect();const x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;el.style.setProperty('--cx',`${(x+.5)*100}%`);el.style.setProperty('--cy',`${(y+.5)*100}%`);el.style.transform=`rotateX(${(-y*scale).toFixed(2)}deg) rotateY(${(x*scale).toFixed(2)}deg) translateY(-2px)`}
+function resetTilt(el){el.style.transform=''}
+window.addEventListener('mousemove',e=>{document.body.style.setProperty('--mx',`${e.clientX/window.innerWidth*100}%`);document.body.style.setProperty('--my',`${e.clientY/window.innerHeight*100}%`)});
+window.addEventListener('scroll',()=>{const h=document.documentElement;$('#progress').style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';let current='';$$('section').forEach(sec=>{if(scrollY>=sec.offsetTop-170)current=sec.id});$$('.links a').forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+current));});
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')}),{threshold:.12});$$('.reveal').forEach(el=>io.observe(el));
+$$('.tilt,.card,.viewer-inner').forEach(el=>{el.addEventListener('mousemove',e=>tilt(e,el,el.classList.contains('viewer-inner')?5:9));el.addEventListener('mouseleave',()=>resetTilt(el));});
+$('#mainFig').addEventListener('click',openSpotlight);$('#spotlight').addEventListener('click',e=>{if(e.target.id==='spotlight')closeSpotlight()});
+$('#figFilters').addEventListener('click',e=>{if(!e.target.matches('.chip'))return;$$('#figFilters .chip').forEach(b=>b.classList.remove('active'));e.target.classList.add('active');renderThumbs(e.target.dataset.filter)});
+$$('.strategyBtn').forEach(b=>b.addEventListener('click',()=>{currentStrategy=b.dataset.strategy;renderStrategy()}));
+window.addEventListener('keydown',e=>{if(/[1-6]/.test(e.key)){const ids=['inicio','graficos','estrategia','fairness','impacto','cierre'];location.hash=ids[Number(e.key)-1]} if(e.key.toLowerCase()==='g')location.hash='graficos'; if(e.key.toLowerCase()==='e')location.hash='estrategia'; if(e.key==='Escape')closeSpotlight();});
+renderThumbs();renderStrategy();
+</script>
+</body>
+</html>

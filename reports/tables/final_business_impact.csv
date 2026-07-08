@@ -1,0 +1,3 @@
+Estrategia,TP,FP,FN,TN,Impacto_estimado_USD,Canciones_para_revision
+Equilibrada — umbral 0.55,2380,1874,800,8406,13652000,4254
+Descubrimiento — umbral 0.35,2873,3692,307,6588,18890000,6565
