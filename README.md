@@ -4,7 +4,7 @@
 
 El problema se aborda como una **clasificación binaria**, considerando como popular una canción con un valor de popularidad **mayor o igual a 60**. El modelo funciona como una herramienta de apoyo y no como un reemplazo del criterio humano.
 
-## 🚀 Funcionalidades principales
+## Funcionalidades principales
 
 * Análisis exploratorio de más de **114 000 canciones**.
 * Limpieza y preparación de los datos para Machine Learning.
@@ -21,7 +21,7 @@ El problema se aborda como una **clasificación binaria**, considerando como pop
 * Documentación de gobernanza y cumplimiento de la LOPDP.
 * Definición de responsabilidades mediante matrices RACI.
 
-## 🛠️ Tecnologías utilizadas
+## Tecnologías utilizadas
 
 * Python
 * Pandas — manipulación y análisis de datos
@@ -33,7 +33,7 @@ El problema se aborda como una **clasificación binaria**, considerando como pop
 * Git — control de versiones
 * GitHub — gestión y documentación del proyecto
 
-## 📁 Estructura del proyecto
+## Estructura del proyecto
 
 ```text
 spotify-tracks-ml/
@@ -68,7 +68,7 @@ spotify-tracks-ml/
 └── README.md                   # Documentación general
 ```
 
-## 📦 Instalación
+## Instalación
 
 1. Clona el repositorio:
 
@@ -94,7 +94,7 @@ pip install -r requirements.txt
 jupyter notebook
 ```
 
-## 🤖 Modelo de Machine Learning
+## Modelo de Machine Learning
 
 El proyecto utiliza un enfoque de **clasificación binaria**:
 
@@ -110,7 +110,7 @@ El dataset presenta aproximadamente la siguiente distribución:
 
 Se comparan diferentes algoritmos de Machine Learning y se evalúan mediante métricas que permiten analizar tanto el rendimiento general como la capacidad del modelo para identificar canciones potencialmente populares.
 
-## ⚖️ Ética y gobernanza
+## Ética y gobernanza
 
 El proyecto incorpora prácticas de Machine Learning responsable mediante:
 
@@ -125,17 +125,14 @@ El proyecto incorpora prácticas de Machine Learning responsable mediante:
 
 El modelo está diseñado como una **herramienta de apoyo para A&R**. Sus predicciones no representan una garantía de éxito comercial ni deben utilizarse como único criterio para seleccionar o descartar canciones o artistas.
 
-## 👥 Equipo
+## Autora
+Gabriela Cárdenas
+Estudiante de Ingeniería en Ciencias de Datos & Desarrollo de Software
+Pontificia Universidad Católica del Ecuador (PUCE)
+Universidad UTE (UTE)
 
-**Gabriela Cárdenas**
-**Ana Hidalgo**
-**Emilio**
-**Sebastián**
-**David**
 
-Proyecto desarrollado como parte de la formación en **Ciencias de Datos**.
-
-## 📌 Dependencias
+## Dependencias
 
 ```text
 pandas
