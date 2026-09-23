@@ -127,8 +127,11 @@ El modelo está diseñado como una **herramienta de apoyo para A&R**. Sus predic
 
 ## Autora
 Gabriela Cárdenas
+
 Estudiante de Ingeniería en Ciencias de Datos & Desarrollo de Software
+
 Pontificia Universidad Católica del Ecuador (PUCE)
+
 Universidad UTE (UTE)
 
 
